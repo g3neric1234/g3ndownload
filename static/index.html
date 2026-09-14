@@ -1,61 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Media Downloader</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G3nDownload</title>
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <header>
-<div class="brand">Media Downloader</div>
-<div class="sub">YouTube video & audio</div>
+<div class="header-inner">
+<div><div class="brand">G3nDownload</div><div class="sub">YouTube video & audio</div></div>
+<button id="themeToggle" class="theme-toggle" type="button" aria-label="Cambiar tema"></button>
+</div>
 </header>
 <main>
 <section class="search-box">
+<div class="search-tabs">
+<button id="contentMode" class="search-tab active" type="button">Contenido</button>
+<button id="collectionMode" class="search-tab" type="button">Álbum / Playlist</button>
+</div>
 <form id="searchForm">
-<input id="query" type="text" placeholder="Pega una URL o busca por nombre..." autocomplete="off">
+<input id="query" type="text" placeholder="Pega una URL o busca una canción, video..." autocomplete="off">
 <button type="submit">Buscar</button>
 </form>
 <div id="status"></div>
 </section>
-
 <section id="resultsSection" class="hidden">
 <h2>Resultados</h2>
 <div id="results"></div>
 </section>
-
 <section id="selectedSection" class="hidden">
+<h2>Contenido seleccionado</h2>
 <div class="selected">
-<img id="cover" src="" alt="Portada">
+<img id="cover" src="" alt="">
 <div class="details">
-<div class="label">Contenido seleccionado</div>
-<h1 id="title"></h1>
-<div class="meta">
-<span id="artist"></span>
-<span id="year"></span>
-<span id="duration"></span>
-</div>
+<div class="label">Información</div>
+<h1 id="title">Sin título</h1>
+<div class="meta"><span id="artist">Artista desconocido</span><span id="year">Año no disponible</span><span id="duration"></span></div>
 <div class="extra">
-<div><b>Canal:</b> <span id="creator"></span></div>
-<div><b>Productor:</b> <span id="producer"></span></div>
-<div><b>Álbum:</b> <span id="album"></span></div>
+<div><strong>Creador:</strong> <span id="creator">No disponible</span></div>
+<div><strong>Productor:</strong> <span id="producer">No disponible</span></div>
+<div><strong>Álbum:</strong> <span id="album">No disponible</span></div>
+</div>
+<div id="metadataStatus" class="metadata-status"></div>
 </div>
 </div>
-</div>
-
 <div class="formats">
-<button class="format active" data-mode="mp4">
-<strong>MP4</strong>
-<span>Video con audio</span>
-</button>
-<button class="format" data-mode="mp3">
-<strong>MP3</strong>
-<span>Audio con metadatos</span>
-</button>
+<button class="format active" data-mode="mp4" type="button"><strong>MP4</strong><span>Video con audio</span></button>
+<button class="format" data-mode="mp3" type="button"><strong>MP3</strong><span>Audio con metadatos</span></button>
 </div>
-<button id="download" class="download">Descargar</button>
+<button id="download" class="download" type="button">Descargar</button>
+<div id="downloadProgress" class="download-progress hidden">
+<div class="progress-top"><span id="progressLabel">Preparando descarga...</span><strong id="progressPercent">0%</strong></div>
+<div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+<div class="progress-info"><span id="progressBytes">0 MB / 0 MB</span><span id="progressRemaining">Faltan 0 MB</span></div>
+</div>
 <div id="downloadStatus"></div>
+</section>
+<section id="collectionSection" class="hidden">
+<h2 id="collectionHeading">Colección</h2>
+<div class="collection-head">
+<img id="collectionCover" src="" alt="">
+<div class="collection-details">
+<div class="label" id="collectionTypeLabel">Álbum</div>
+<h1 id="collectionTitle">Colección</h1>
+<div class="meta"><span id="collectionArtist"></span><span id="collectionYear"></span><span id="collectionCount"></span></div>
+</div>
+</div>
+<div id="collectionTracks" class="track-list"></div>
+<div class="collection-actions">
+<button class="format active" data-collection-mode="mp3" type="button"><strong>MP3 ZIP</strong><span>Álbum o playlist completa en MP3</span></button>
+<button class="format" data-collection-mode="mp4" type="button"><strong>MP4 ZIP</strong><span>Álbum o playlist completa en MP4</span></button>
+</div>
+<button id="downloadCollection" class="download" type="button">Descargar colección</button>
+<div id="collectionProgress" class="download-progress hidden">
+<div class="progress-top"><span id="collectionProgressLabel">Preparando colección...</span><strong id="collectionProgressPercent">0%</strong></div>
+<div class="progress-track"><div id="collectionProgressBar" class="progress-bar"></div></div>
+<div class="progress-info"><span id="collectionProgressBytes">0 MB / 0 MB</span><span id="collectionProgressRemaining">Faltan 0 MB</span></div>
+</div>
+<div id="collectionStatus"></div>
 </section>
 </main>
 <script src="/app.js"></script>
