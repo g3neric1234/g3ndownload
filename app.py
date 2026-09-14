@@ -61,6 +61,14 @@ class CollectionDownloadRequest(BaseModel):
     items: list[dict]
 
 
+def youtube_error_message(exc):
+    message = str(exc)
+    lowered = message.lower()
+    if "sign in to confirm" in lowered or "not a bot" in lowered or "login_required" in lowered:
+        return "YouTube rechazó temporalmente la solicitud del servidor. G3nDownload está usando clientes públicos sin cookies, pero este video o la IP de Vercel puede requerir una verificación de YouTube. Probá otro video o intentá nuevamente más tarde."
+    return message
+
+
 def ydl_base():
     options = {
         "quiet": True,
@@ -69,9 +77,17 @@ def ydl_base():
         "retries": 3,
         "fragment_retries": 3,
         "socket_timeout": 30,
+        "extractor_retries": 3,
         "embedthumbnail": True,
         "addmetadata": True,
         "embedmetadata": True,
+        "js_runtimes": {"node": {}},
+        "remote_components": {"ejs": "github"},
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["web_embedded", "tv", "android_vr"]
+            }
+        },
     }
     if FFMPEG_DIR:
         options["ffmpeg_location"] = FFMPEG_DIR
@@ -362,7 +378,7 @@ def search(request: SearchRequest):
                 entries = info.get("entries") or []
         return {"results": [item_data(item) for item in entries if item]}
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=502, detail=youtube_error_message(exc))
 
 
 @app.post("/api/metadata")
@@ -404,7 +420,7 @@ def collection(request: CollectionRequest):
     try:
         return find_collection(query)
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=502, detail=youtube_error_message(exc))
 
 
 @app.post("/api/resolve-track")
@@ -414,7 +430,7 @@ def resolve_track(request: ResolveTrackRequest):
     try:
         return resolve_youtube_track(request.title.strip(), request.artist.strip())
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=502, detail=youtube_error_message(exc))
 
 
 def download_stream(url, mode):
