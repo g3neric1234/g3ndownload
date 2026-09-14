@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Media Downloader</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+<div class="brand">Media Downloader</div>
+<div class="sub">YouTube video & audio</div>
+</header>
+<main>
+<section class="search-box">
+<form id="searchForm">
+<input id="query" type="text" placeholder="Pega una URL o busca por nombre..." autocomplete="off">
+<button type="submit">Buscar</button>
+</form>
+<div id="status"></div>
+</section>
+
+<section id="resultsSection" class="hidden">
+<h2>Resultados</h2>
+<div id="results"></div>
+</section>
+
+<section id="selectedSection" class="hidden">
+<div class="selected">
+<img id="cover" src="" alt="Portada">
+<div class="details">
+<div class="label">Contenido seleccionado</div>
+<h1 id="title"></h1>
+<div class="meta">
+<span id="artist"></span>
+<span id="year"></span>
+<span id="duration"></span>
+</div>
+<div class="extra">
+<div><b>Canal:</b> <span id="creator"></span></div>
+<div><b>Productor:</b> <span id="producer"></span></div>
+<div><b>Álbum:</b> <span id="album"></span></div>
+</div>
+</div>
+</div>
+
+<div class="formats">
+<button class="format active" data-mode="mp4">
+<strong>MP4</strong>
+<span>Video con audio</span>
+</button>
+<button class="format" data-mode="mp3">
+<strong>MP3</strong>
+<span>Audio con metadatos</span>
+</button>
+</div>
+<button id="download" class="download">Descargar</button>
+<div id="downloadStatus"></div>
+</section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
