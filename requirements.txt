@@ -1,4 +1,4 @@
 fastapi
 uvicorn
-"yt-dlp[default]"
+yt-dlp[default]
 imageio-ffmpeg
