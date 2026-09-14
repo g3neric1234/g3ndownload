@@ -36,11 +36,9 @@ def ydl_base():
         "retries": 3,
         "fragment_retries": 3,
         "socket_timeout": 30,
-        "writethumbnail": True,
         "embedthumbnail": True,
         "addmetadata": True,
         "embedmetadata": True,
-        "writeinfojson": True,
     }
     if FFMPEG_DIR:
         options["ffmpeg_location"] = FFMPEG_DIR
@@ -85,7 +83,11 @@ def search(request: SearchRequest):
         with yt_dlp.YoutubeDL(options) as ydl:
             if query.startswith(("http://", "https://")):
                 info = ydl.extract_info(query, download=False)
-                entries = info.get("entries") if info.get("_type") == "playlist" else [info]
+                if info.get("_type") == "playlist":
+                    entries = list(info.get("entries") or [])
+                    entries = [entry for entry in entries if entry]
+                else:
+                    entries = [info]
             else:
                 info = ydl.extract_info(f"ytsearch8:{query}", download=False)
                 entries = info.get("entries") or []
@@ -166,3 +168,4 @@ def download(request: DownloadRequest):
         raise HTTPException(status_code=500, detail=str(exc))
 
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+
